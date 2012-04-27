@@ -1,0 +1,174 @@
+package code.model;
+import java.util.*;
+
+public class LetsTalk {
+  private ArrayList<Customer> customerList;
+  private ArrayList<Plan> planList;
+  private static long lastCustId = -1L;
+  
+  public LetsTalk() {
+    customerList = new ArrayList<Customer>();
+    planList = new ArrayList<Plan>();
+  }
+  
+  public void setCustomerList(ArrayList<Customer> cl) { customerList = cl; }
+  public void setPlanList(ArrayList<Plan> pl) { planList = pl; }
+  public ArrayList<Customer> getCustomerList() { return customerList; }
+  public ArrayList<Plan> getPlanList() { return planList; }
+  public static long getCustomerId() { lastCustId++; return lastCustId; }  
+  
+  private double getCost(UsageDetails ud, Plan p) {
+    double cost = 0;
+    cost += p.getLM2M() * ud.getLM2M();
+    cost += p.getLM2L() * ud.getLM2L();
+    cost += p.getSTD() * ud.getSTD();
+    cost += p.getSMS() * ud.getSMS();
+    if(p instanceof PostPaidPlan)
+      cost += ((PostPaidPlan)p).getMR();
+    return cost;
+  }
+  public Plan getBestPlan(UsageDetails ud) {
+    double min = 0;
+    Plan bestPlan = new Plan();
+    for(int i=0;i<planList.size();i++) {
+      if(i==0) {
+        min = getCost(ud, planList.get(i));
+        bestPlan = planList.get(i);
+      }
+      double temp = getCost(ud, planList.get(i));
+      if(min > temp) {
+        min = temp;
+        bestPlan = planList.get(i);
+      }
+    }
+    return bestPlan;
+  }
+  
+  public boolean addCustomer(Customer c)
+  {
+    customerList.add(c);
+    return true;
+  }
+  
+  public boolean isCustomerValid(long custId)
+  {
+    for(int i=0; i<customerList.size(); i++)
+    {
+      if(customerList.get(i).getCustomerId() == custId)
+        return true;
+    }
+    return false;
+  }
+  
+  public Customer getCustomer(long custId)
+  {
+    for(int i=0; i<customerList.size(); i++)
+    {
+      if(customerList.get(i).getCustomerId() == custId)
+        return customerList.get(i);
+    }
+    return new Customer();
+  }
+  public boolean checkForNoSubscriber(String planName) {
+    for(int i=0;i<customerList.size();i++) {
+      Customer c = customerList.get(i);
+      if(c.getPlan().getName().equals(planName))
+        return false;
+    }
+    return true;
+  }
+  public boolean discontinuePlan(String planName) {
+    for(int i=0;i<planList.size();i++) {
+      if(planList.get(i).getName().equals(planName)) {
+        planList.get(i).setStatus(false);
+        return true;
+      } 
+    }
+    return false;
+  }
+  public boolean addPlan(Plan p) {
+    try {
+      planList.add(p);    
+      return true;
+    } catch (Exception e) {
+      return false;
+    }
+  }
+  
+  public boolean isPlanValid(String planName)
+  {
+    for (int i=0;i<planList.size();i++)
+      if(planName.equals(planList.get(i).getName()))
+        return true;
+    return false; 
+  }
+  
+  
+  public Plan getPlan(String planName)
+  {
+    for (int i=0;i<planList.size();i++)
+      if(planName.equals(planList.get(i).getName()))
+        return planList.get(i);
+    return new Plan();
+  } 
+  
+  
+  public Plan getMostPopularPrepaidPlan()
+  {
+    int[] plcount=new int[planList.size()];
+    for(int i=0;i<customerList.size();i++)
+      for(int j=0;j<planList.size();j++)
+      {
+      if(planList.get(j) instanceof PrepaidPlan)
+        if((customerList.get(i).getPlan()).equals(planList.get(j).getName()))
+          plcount[j]++;
+      }
+    int max=plcount[0];
+    for(int i=0;i<plcount.length;i++)
+      if(max<plcount[i])
+        max=plcount[i];
+    for(int i=0;i<plcount.length;i++)
+      if(max==plcount[i])
+        return planList.get(i);
+    return new Plan();
+  } 
+  public Plan getMostPopularPostPaidPlan()
+  {
+    int[] plcount=new int[planList.size()];
+    for(int i=0;i<customerList.size();i++)
+      for(int j=0;j<planList.size();j++)
+      {
+      if(planList.get(j) instanceof PostPaidPlan)
+        if((customerList.get(i).getPlan()).equals(planList.get(j).getName()))
+          plcount[j]++;
+      }
+    int max=plcount[0];
+    for(int i=0;i<plcount.length;i++)
+      if(max<plcount[i])
+        max=plcount[i];
+    for(int i=0;i<plcount.length;i++)
+      if(max==plcount[i])
+        return planList.get(i);
+    return new Plan();
+  } 
+  
+  public static int UNIQUE_PLAN = -1;
+  public static int DUPLICATE_PLAN_NAME = 0;
+  public static int PLAN_EXISTS_AS_INACTIVE = 1;
+  public static int PLAN_EXISTS_AS_ACTIVE = 2;
+  public int checkForDuplicatePlan(Plan p,String s) {
+    for(int i=0;i<planList.size();i++) {
+      Plan pl = planList.get(i);
+      if(pl.getName().equals(p.getName())) {
+        s = pl.getName();
+        return DUPLICATE_PLAN_NAME;
+      }
+      if(p.equals(pl)) {
+        s = pl.getName();
+        return (pl.getStatus())?PLAN_EXISTS_AS_ACTIVE:PLAN_EXISTS_AS_INACTIVE;
+      }        
+    }
+    return UNIQUE_PLAN;
+  }
+  
+}

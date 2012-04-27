@@ -1,0 +1,44 @@
+package code.ui;
+import java.io.*;
+
+
+public class MainUI {
+  
+  
+  public static int displayMenu() {
+    System.out.println("");
+    System.out.println("");
+    System.out.println("");
+    System.out.println("");
+    System.out.println("----------------------------------------------------");    
+    System.out.println("----WELCOME TO LETS TALK MOBILE SERVICE PROVIDER----");
+    System.out.println("----------------------------------------------------");
+    System.out.println("");
+    System.out.println("1. Add new plans");    
+    System.out.println("2. View available prepaid and postpaid plans");
+    System.out.println("3. Find out most popular pre-paid and post-paid plans");
+    System.out.println("4. Determine best plan given the customer's tentative usage details");
+    System.out.println("5. Register Customer");
+    System.out.println("6. Change Plan");
+    System.out.println("7. Update existing plans");
+    System.out.println("8. Discontinue plans provided they do not have any subscribers");
+    System.out.println("9. Exit");
+    System.out.println("");
+    return getOption();
+  }
+  
+  private static int getOption() {
+    System.out.println("SELECT AN OPTION: ");
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    int i = 0;
+    try {
+      i = Integer.parseInt(br.readLine());
+      if(i <=0 || i>9)
+        throw new Exception();
+    } catch (Exception e) {
+      System.out.println("Enter valid option.");
+      return getOption();
+    }
+    return i;
+  }
+}

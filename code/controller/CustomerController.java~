@@ -1,0 +1,83 @@
+package code.controller;
+import code.model.*;
+import code.ui.*;
+import code.*;
+
+public class CustomerController {
+//////////////////////////////////////////////////////////////////////////////////////////////  
+  public void registerCustomer() {
+    CustomerUI custUI = new CustomerUI();
+    Customer c = custUI.getCustomerDetails();
+    String planName = custUI.getDesiredPlan();
+    int i=0;
+    while(!LetsTalkMobileServiceProvider.letsTalk.isPlanValid(planName)) {
+      i++;
+      if(i==3) {
+        custUI.displayMessage("You will now be redirected to main menu.");
+        return;
+      }   
+      custUI.displayMessage("Given plan doesnot exist in the system. Enter a valid plan name.");
+      planName = custUI.getDesiredPlan();
+    }
+    boolean confirmation = custUI.getConfirmation("Are You Sure? (Y/N) ");
+    if(!confirmation) {
+      custUI.displayMessage("Customer Registration process cancelled successfully.");
+      return;
+    }
+    
+    c.enrolPlan(planName);
+    boolean status = LetsTalkMobileServiceProvider.letsTalk.addCustomer(c);
+    if(!status) {
+      custUI.displayMessage("Unable to register the Customer due to technical difficulties. Please Try Again Later.");
+      return;
+    } else {
+      custUI.displayMessage("Operation Completed Successfully.");
+    }
+    custUI.displayMessage("Customer ID: "+c.getCustomerId());
+  }
+  
+//////////////////////////////////////////////////////////////////////////////////////////////  
+  public void changePlan() {
+    CustomerUI custUI = new CustomerUI();
+    long custId = custUI.getCustomerId();
+    int i = 0;
+    while(!LetsTalkMobileServiceProvider.letsTalk.isCustomerValid(custId)) {
+      i++;
+      if(i==3) {
+        custUI.displayMessage("You will now be redirected to main menu.");
+        return;
+      }      
+      custUI.displayMessage("Given customer Id is invalid. Please enter a valid customer Id.");
+      custId = custUI.getCustomerId();               
+    }
+    Customer c = LetsTalkMobileServiceProvider.letsTalk.getCustomer(custId);
+    custUI.displayMessage("Current Plan: "+c.getPlan().getName());
+    custUI.displayMessage("Current Plan Type: "+((c.getPlan() instanceof PrepaidPlan)?"Prepaid":"Postpaid"));    
+    String planName = custUI.getDesiredPlan();
+    i=0;
+    while(!LetsTalkMobileServiceProvider.letsTalk.isPlanValid(planName)) {
+      i++;
+      if(i==3) {
+        custUI.displayMessage("You will now be redirected to main menu.");
+        return;
+      }   
+      custUI.displayMessage("Given plan doesnot exist in the system. Enter a valid plan name.");
+      planName = custUI.getDesiredPlan();
+    }
+    boolean confirmation = custUI.getConfirmation("Are You Sure? (Y/N) ");
+    if(!confirmation) {
+      custUI.displayMessage("Change Plan process cancelled successfully.");
+      return;
+    }
+    
+    Plan p = LetsTalkMobileServiceProvider.letsTalk.getPlan(planName);
+    boolean status = c.setNewPlan(p);
+    if(!status) {
+      custUI.displayMessage("Unable to change the plan due to technical difficulties. Please Try Again Later.");
+      return;
+    } 
+    else {
+      custUI.displayMessage("Operation Completed Successfully.");
+    }
+  }
+}

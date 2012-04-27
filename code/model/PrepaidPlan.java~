@@ -1,0 +1,18 @@
+package code.model;
+import java.util.*;
+public class PrepaidPlan extends Plan
+{
+   private Date validity;
+   public PrepaidPlan()
+   {
+   }
+   public PrepaidPlan(String name,double LM2M,double LM2L,double STD,double SMS,Date validity)
+   {
+     super(name,LM2M,LM2L,STD,SMS);  
+     this.validity = validity;
+   }
+   public Date getValidity() { return validity; }
+   public void setValidity(Date myValidity) { validity = myValidity; }
+}
+
+   

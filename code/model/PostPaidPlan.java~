@@ -1,0 +1,17 @@
+package code.model;
+public class PostPaidPlan extends Plan
+{
+   private double MR;
+   public PostPaidPlan()
+   {
+   }
+   public PostPaidPlan(String name,double LM2M,double LM2L,double STD,double SMS,double MR)
+   {
+     super(name,LM2M,LM2L,STD,SMS); 
+     this.MR = MR;
+   }
+   public double getMR() { return MR; }
+   public void setMR(double myMR) { MR = myMR; }
+}
+
+   

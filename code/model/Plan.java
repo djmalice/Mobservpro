@@ -1,0 +1,48 @@
+package code.model;
+public class Plan
+{
+   private String name;
+   private double LM2M;
+   private double LM2L;
+   private double STD;
+   private double SMS;
+   private boolean status;
+   public Plan()
+   {
+   }
+   
+   public Plan(String name,double LM2M,double LM2L,double STD,double SMS,boolean s)
+   {
+      this.name = name;
+      this.LM2M = LM2M;
+      this.LM2L = LM2L;
+      this.STD = STD;
+      this.SMS = SMS;
+      status = s;
+   }
+
+   
+   public String getName() { return name; }
+   public void setName(String myName) { name = myName; }
+   public double getLM2M() { return LM2M; }
+   public void setLM2M(double myLM2M) { LM2M = myLM2M; }
+   public double getLM2L() { return LM2L; }
+   public void setLM2L(double myLM2L) { LM2L = myLM2L; }
+   public double getSTD() { return STD; }
+   public void setSTD(double mySTD) { STD = mySTD; }
+   public double getSMS() { return SMS; }
+   public void setSMS(double mySMS) { SMS = mySMS; }
+   public boolean getStatus() { return status; }
+   public void setStatus(boolean myStatus) { status = myStatus; }
+   
+   public boolean equals(Plan p) {
+     if(p.getLM2M() == LM2M &&
+        p.getLM2L() == LM2L &&
+        p.getSTD() == STD &&
+        p.getSMS() == SMS)
+       return true;
+     return false;        
+   }
+}
+
+   
